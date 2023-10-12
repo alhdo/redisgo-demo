@@ -4,16 +4,17 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/alhdo/simple-go-worker/api"
 	"github.com/alhdo/simple-go-worker/config"
 	"github.com/alhdo/simple-go-worker/cors"
 	"github.com/gomodule/redigo/redis"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"log"
-	"net/http"
-	"os"
-	"time"
 )
 
 // Version Placeholder will be used at compile time
@@ -33,7 +34,7 @@ func main() {
 		os.Exit(0)
 	}
 	config := config.New(*configFile)
-	redisPool = initRedisPool()
+	redisPool = initRedisPool(config.Redis.Host + ":" + config.Redis.Port)
 	// Create request handler
 	corsHandler := &cors.Handler{}
 	fetchHandler := &api.FetchHandler{}
@@ -112,12 +113,12 @@ func processJobs() {
 	}
 }
 
-func initRedisPool() *redis.Pool {
+func initRedisPool(redisHost string) *redis.Pool {
 	return &redis.Pool{
 		MaxIdle:     3,
 		IdleTimeout: 240 * time.Second,
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", "localhost:6379")
+			c, err := redis.Dial("tcp", redisHost)
 			if err != nil {
 				return nil, err
 			}

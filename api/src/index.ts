@@ -35,7 +35,9 @@ const wss = new Server(server,{
   wss.on('connection', (socket) => {
     console.log(`${socket.id} connected.`);
   })
-const client = createClient()
+const client = createClient({
+    url: `redis://${config.REDIS_HOST}:6379`
+})
 const subscriber = createClient()
 client.on('error', err => console.log('Redis Client Error', err));
 client.on("connect", () => {

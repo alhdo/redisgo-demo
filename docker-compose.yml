@@ -5,11 +5,46 @@ services:
     image: "redis:latest"
     ports:
       - "6379:6379"
+    networks:
+      - overlay
 
-  go-woker:
+  # go-woker:
+  #   container_name: goworker
+  #   build:
+  #     context: ./simple-go-worker
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - overlay
+  
+  # api:
+  #   container_name: api
+  #   build:
+  #     context: ./api
+  #   extra_hosts:
+  #           - 'docker.for.mac.host.internal:host-gateway'
+  #   volumes:
+  #     - ./api:/app
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - overlay
+
+  vue:
+    container_name: vue
     build:
-      context: ./simple-go-worker
+      context: ./vlille
+    volumes:
+      - ./vlille:/app
     ports:
-      - "8080:8080"
+      - "8000:8000"
     depends_on:
       - redis
+    networks:
+      - overlay
+networks:
+  overlay:
