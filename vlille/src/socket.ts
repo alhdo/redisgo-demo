@@ -5,8 +5,8 @@ import { useBikeStore} from './stores/station';
 export const state = reactive({
     connected: false,
 });
-const URL = process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000";
-export const socket = io("http://0.0.0.0:3000");
+console.log(import.meta.env.API_URL)
+export const socket = io("http://localhost:3000");
 
 socket.on("connect", () => {
   state.connected = true;

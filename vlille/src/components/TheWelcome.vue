@@ -9,8 +9,16 @@
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
+        <div class="input-group mb-3">
+          <input v-model="searchTerm" type="text" class="form-control" placeholder="Search..." aria-label="Search">
+        </div>
+        
         <div class="vlille-main-container">
-    <VeloItem v-for="station in bikeStations" :key="station.id">
+            <div class="no-result" v-if="!getStations.length && !loading">
+              <EmptyView></EmptyView>
+            </div>
+
+    <VeloItem v-else-if="getStations.length && !loading" v-for="station in getStations" :key="station.id">
         <template #heading>{{ station.name }}</template>
         <template #address>{{ station.extra.address }}</template>
         <template #city>{{ station.extra.city }}</template>
@@ -20,6 +28,9 @@
         </template>
     </VeloItem>
 
+    <div class="loading-container" v-if="loading">
+      <strong>Loading...</strong>
+    </div>
     
   </div>
       </div>
@@ -34,11 +45,12 @@
 <script setup lang="ts">
 import VeloItem from './VeloItem.vue'
 import SpaceButton from './buttons/SpaceButton.vue'
+import EmptyView from './EmptyView.vue'
 import { useBikeStore} from '../stores/station';
 import { storeToRefs } from 'pinia';
 
-const { bikeStations } = storeToRefs(useBikeStore())
-const { fetchBikeStations, initWebSocket } = useBikeStore()
+const { loading, searchTerm, getStations } = storeToRefs(useBikeStore())
+const { fetchBikeStations } = useBikeStore()
 fetchBikeStations()
-initWebSocket()
+// initWebSocket()
 </script>
