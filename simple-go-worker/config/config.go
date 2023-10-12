@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -11,7 +12,7 @@ type Config struct {
 		Address string `mapstructure:"address"`
 	} `mapstructure:"server"`
 	Redis struct {
-		Host string `mapstructure:"address"`
+		Host string `mapstructure:"host"`
 		Port string `mapstrucure:"port"`
 	}
 }

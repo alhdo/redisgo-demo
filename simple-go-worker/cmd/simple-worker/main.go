@@ -34,6 +34,7 @@ func main() {
 		os.Exit(0)
 	}
 	config := config.New(*configFile)
+	fmt.Println(config.Redis.Host + ":" + config.Redis.Port)
 	redisPool = initRedisPool(config.Redis.Host + ":" + config.Redis.Port)
 	// Create request handler
 	corsHandler := &cors.Handler{}

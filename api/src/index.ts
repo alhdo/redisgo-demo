@@ -36,9 +36,11 @@ const wss = new Server(server,{
     console.log(`${socket.id} connected.`);
   })
 const client = createClient({
-    url: `redis://${config.REDIS_HOST}:6379`
+    url: `redis://${config.REDIS_HOST}:${config.REDIS_PORT}`
 })
-const subscriber = createClient()
+const subscriber = createClient({
+    url: `redis://${config.REDIS_HOST}:${config.REDIS_PORT}`
+})
 client.on('error', err => console.log('Redis Client Error', err));
 client.on("connect", () => {
     console.log(`Redis connection established`);
