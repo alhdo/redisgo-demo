@@ -1,87 +1,43 @@
-package core
+package core_test
 
 import (
-	"reflect"
+	"github.com/alhdo/simple-go-worker/core"
+	"github.com/gomodule/redigo/redis"
 	"testing"
 )
 
-func TestNewPubSubService(t *testing.T) {
-	type args struct {
-		pool       *redis.Pool
-		pubChannel string
-		subChannel string
+func TestMewPubSubService(t *testing.T) {
+	// Set up a Redis pool for testing (you may want to use a mock Redis server for testing)
+	redisPool := &redis.Pool{
+		Dial: func() (redis.Conn, error) {
+			return redis.Dial("tcp", "localhost:6379")
+		},
 	}
-	tests := []struct {
-		name string
-		args args
-		want *PubSubService
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPubSubService(tt.args.pool, tt.args.pubChannel, tt.args.subChannel); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewPubSubService() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
 
-func TestPubSubService_PublishMessage(t *testing.T) {
-	type fields struct {
-		pool       *redis.Pool
-		subChannel string
-		pubChannel string
-	}
-	type args struct {
-		message string
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ps := &PubSubService{
-				pool:       tt.fields.pool,
-				subChannel: tt.fields.subChannel,
-				pubChannel: tt.fields.pubChannel,
-			}
-			if err := ps.PublishMessage(tt.args.message); (err != nil) != tt.wantErr {
-				t.Errorf("PublishMessage() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
+	subChannel := "testSubChannel"
+	pubChannel := "testSubChannel"
 
-func TestPubSubService_Subscribe(t *testing.T) {
-	type fields struct {
-		pool       *redis.Pool
-		subChannel string
-		pubChannel string
+	// Create a PubSubService instance for testing
+	ps := core.NewPubSubService(redisPool, pubChannel, subChannel)
+
+	// Create a channel to receive messages
+	messages := make(chan string, 1)
+
+	// Start a goroutine to subscribe to the channel
+	go func() {
+		ps.Subscribe(messages)
+	}()
+
+	// Publish a test message
+	testMessage := "Test Message"
+	err := ps.PublishMessage(testMessage)
+	if err != nil {
+		t.Fatalf("Error publishing message: %v", err)
 	}
-	type args struct {
-		messages chan string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ps := &PubSubService{
-				pool:       tt.fields.pool,
-				subChannel: tt.fields.subChannel,
-				pubChannel: tt.fields.pubChannel,
-			}
-			ps.Subscribe(tt.args.messages)
-		})
+
+	// Receive and validate the message
+	receivedMessage := <-messages
+	if receivedMessage != testMessage {
+		t.Fatalf("Expected message '%s', but received '%s'", testMessage, receivedMessage)
 	}
 }

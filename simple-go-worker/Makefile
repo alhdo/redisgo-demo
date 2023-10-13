@@ -3,6 +3,9 @@
 BINARY=simple-worker
 
 all: test build lint
+
+test:
+	go test -race -v ./...
 build:
 	go build -ldflags "-s -w" -o $(BINARY) -v ./cmd/$(BINARY)
 

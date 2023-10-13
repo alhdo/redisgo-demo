@@ -9,4 +9,4 @@ RUN go install -v ./...
 
 EXPOSE 8080
 
-CMD [ "go", "run", "/app/cmd/simple-worker/main.go", "-c", "simple-go-worker.conf.example" ]
+CMD [ "go", "run", "/app/cmd/simple-worker/main.go", "-c", "simple-go-worker.conf.docker" ]
