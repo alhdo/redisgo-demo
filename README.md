@@ -37,6 +37,10 @@ cd redisgo-demo
 docker-compose up -d
 ```
 
+The front-end will be running on port 8000
+
+[http://localhost:8000](http://localhost:8000)
+
 You can run this project by running each of the component separately also. Below is the step and configuration needed to run them independently:
 
 
