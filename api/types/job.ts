@@ -10,7 +10,11 @@ export enum TaskType {
 export interface Job {
     id: string;
     task: TaskType;
-    params: Record<string, any>;
-    data?: any;
-    status: JobStatus
+    config: Record<string, any>;
+    
+}
+
+export interface JobResponse {
+    key: string;
+    status: JobStatus;
 }
